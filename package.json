@@ -5,10 +5,7 @@
   "main": "dist/index.js",
   "scripts": {
     "build": "webpack && webpack -p && webpack -b && webpack -p -b",
-    "demo": "webpack &&  sh generate-contents.sh && node_modules/.bin/webpack-dev-server --content-base dist/",
-    "prepublish": "npm run build && npm run copy-bundles",
-    "deploy-demo": "./demo/deploy.sh",
-    "postversion": "git push && git push --tags"
+    "demo": "webpack &&  sh generate-contents.sh && node_modules/.bin/webpack-dev-server --content-base dist/"
   },
   "author": "windsome.Feng",
   "license": "MIT",
