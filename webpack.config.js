@@ -1,5 +1,6 @@
 module.exports = {
   entry: {
+    detail: './src/detail.jsx',
     index: './src/index.jsx',
     more: './src/more.jsx',
     highstock: './src/highstock.jsx',
