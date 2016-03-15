@@ -29,7 +29,8 @@ var config = {
     title: {
       text: 'Temp(C)'
     },
-    min: -30
+    min: -30,
+    max: 50
   },
 
   series: [{
@@ -57,6 +58,104 @@ var config = {
   }]
 };
 
+var gaugeOptions = {
+
+        chart: {
+            type: 'gauge',
+            plotBackgroundColor: null,
+            plotBackgroundImage: null,
+            plotBorderWidth: 0,
+            plotShadow: false
+        },
+
+        title: {
+            text: 'Speedometer'
+        },
+
+        pane: {
+            startAngle: -150,
+            endAngle: 150,
+            background: [{
+                backgroundColor: {
+                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                    stops: [
+                        [0, '#FFF'],
+                        [1, '#333']
+                    ]
+                },
+                borderWidth: 0,
+                outerRadius: '109%'
+            }, {
+                backgroundColor: {
+                    linearGradient: { x1: 0, y1: 0, x2: 0, y2: 1 },
+                    stops: [
+                        [0, '#333'],
+                        [1, '#FFF']
+                    ]
+                },
+                borderWidth: 1,
+                outerRadius: '107%'
+            }, {
+                // default background
+            }, {
+                backgroundColor: '#DDD',
+                borderWidth: 0,
+                outerRadius: '105%',
+                innerRadius: '103%'
+            }]
+        },
+
+        // the value axis
+        yAxis: {
+            min: 0,
+            max: 200,
+
+            minorTickInterval: 'auto',
+            minorTickWidth: 1,
+            minorTickLength: 10,
+            minorTickPosition: 'inside',
+            minorTickColor: '#666',
+
+            tickPixelInterval: 30,
+            tickWidth: 2,
+            tickPosition: 'inside',
+            tickLength: 10,
+            tickColor: '#666',
+            labels: {
+                step: 2,
+                rotation: 'auto'
+            },
+            title: {
+                text: 'km/h'
+            },
+            plotBands: [{
+                from: 0,
+                to: 60,
+                //color: '#55BF3B' // green
+                color: '#DF5353' // red
+            }, {
+                from: 60,
+                to: 160,
+                //color: '#DDDF0D' // yellow
+                color: '#55BF3B' // green
+            }, {
+                from: 160,
+                to: 200,
+                color: '#DF5353' // red
+            }]
+        },
+
+        series: [{
+            name: 'Speed',
+            data: [80],
+            tooltip: {
+                valueSuffix: ' km/h'
+            }
+        }]
+
+    };
+    
+    /*
     var gaugeOptions = {
         chart: {
             type: 'solidgauge'
@@ -133,10 +232,26 @@ var config = {
         }]
 
     };
-    
+    */
 var globe_day = 0;
 
 class PageDetailInfo extends Component {
+  constructor (props) {
+    super (props);
+
+    this.sensorArray = new Array();
+    this.sensorArray[0] = {id:'0001', type:'temp', value:10};
+    this.sensorArray[1] = {id:'0002', type:'hum', value:100};
+    this.sensorArray[2] = {id:'0003', type:'co2', value:80};
+
+    this.charts = {};
+
+    this.imgs = new Array();
+    this.imgs[0] = '1.jpg';
+    this.imgs[1] = '2.jpg';
+    this.imgs[2] = '3.jpg';
+    this.imgs[3] = '4.jpg';
+  }
   setInterval() {
     this.intervals.push(setInterval.apply(null, arguments));
   }
@@ -160,33 +275,58 @@ class PageDetailInfo extends Component {
     let val = Math.round(sed * 20);
     let month = Math.round(sed * 12);
     let day = Math.round(sed * 30);
-    console.log ("val="+val+", month="+month+",day="+day);
+    //console.log ("val="+val+", month="+month+",day="+day);
 
     //chart.series[0].addPoint({x: Date.UTC(1971, month, day), y: val});
     chart.series[0].removePoint(0);
     chart.series[0].addPoint({x: Date.UTC(1971, 5, globe_day++), y: val});
   }
-  changeGuage () {
+  changeGauge () {
     let chart = this.refs.gauge1.getChart();
-        var point,
-            newVal,
-            inc;
+    var point,
+        newVal,
+        inc;
 
-        if (chart) {
-            point = chart.series[0].points[0];
-            inc = Math.round((Math.random() - 0.5) * 100);
-            newVal = point.y + inc;
+    if (chart) {
+        point = chart.series[0].points[0];
+        inc = Math.round((Math.random() - 0.5) * 100);
+        newVal = point.y + inc;
 
-            if (newVal < 0 || newVal > 200) {
-                newVal = point.y - inc;
-            }
-
-            point.update(newVal);
+        if (newVal < 0 || newVal > 200) {
+            newVal = point.y - inc;
         }
+
+        point.update(newVal);
+    }
+
+    //console.log (this.charts);
+    this.sensorArray.map ( (sensor, i) => {
+      var id = sensor.id;
+      var type = sensor.type;
+      let chart = this.charts[id];
+      if (chart) {
+        let gauge = chart.getChart();
+        if (gauge) {
+          let point = gauge.series[0].points[0];
+          let sed = Math.random();
+          let val = Math.round(sed * 200);
+          point.update(val);
+        }
+      }
+    });
+    /*this.charts.map ((chart, i) => {
+      let gauge = chart.getChart();
+      if (gauge) {
+        let point = gauge.series[0].points[0];
+        let sed = Math.random();
+        let val = Math.round(sed * 200);
+        point.update(val);
+      }
+    });*/
   }
   componentDidMount() {
     this.setInterval(this.addPoint.bind(this), 2000);
-    this.setInterval(this.changeGuage.bind(this), 2000);
+    this.setInterval(this.changeGauge.bind(this), 2000);
     //let url = this.props.source;
     //let url = "https://api.github.com/_private/browser/stats"
     //let url = "https://avatars1.githubusercontent.com/u/226573?v=3&s=40"
@@ -197,11 +337,13 @@ class PageDetailInfo extends Component {
         username: lastGist.owner.login,
         lastGistUrl: lastGist.html_url
       });*/
-      console.log("result="+result);
+      //console.log("result="+result);
     }.bind(this));
   }
   render() {
-    var gauge1 = Object.assign ({}, gaugeOptions, gauge1Options);
+    //var gauge1 = Object.assign ({}, gaugeOptions, gauge1Options);
+    var that = this;
+    var gauge1 = gaugeOptions;
     return (
       <div>
         <ol className="breadcrumb">
@@ -211,8 +353,15 @@ class PageDetailInfo extends Component {
         <div>
           <img src="1.jpg" className="img-responsive" alt="Responsive image"/>
         </div>
-        <div id="gauge1" >
-          <ReactHighcharts config={gauge1} ref="gauge1"></ReactHighcharts>
+        <div id="gauge1" className="row">
+          <div className="col-xs-6 col-sm-3"><ReactHighcharts config={gauge1} ref="gauge1"></ReactHighcharts></div>
+          { this.sensorArray.map((sensor, i) => {
+            var id = sensor.id;
+            var type = sensor.type;
+            return (
+              <div className="col-xs-6 col-sm-3"><ReactHighcharts config={gauge1} ref={(ref) => {that.charts[id]= ref; console.log("id="+id+",ref="+ref)} }></ReactHighcharts></div>
+            )
+          } ) }
         </div>
         <div id="charts1" >
           <ReactHighcharts config={config} ref="chart"></ReactHighcharts>
