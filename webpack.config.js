@@ -1,5 +1,6 @@
 module.exports = {
   entry: {
+    DeviceScan: './src/DeviceScan.jsx',
     detail: './src/detail.jsx',
     index: './src/index.jsx',
     more: './src/more.jsx',
