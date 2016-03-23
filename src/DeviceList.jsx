@@ -107,5 +107,5 @@ class DeviceList extends Component {
 	}
 }
 
-require("file?name=[name].[ext]!./DeviceList.html");
+require("file?name=[name].[ext]!./deviceList.html");
 

@@ -379,4 +379,4 @@ ReactDOM.render(
 
 require("file?name=[name].[ext]!./detail.html");
 require("file?name=[name].[ext]!./charts.css");
-require("file?name=[name].[ext]!./1.jpg");
+require("file?name=[name].[ext]!./res/1.jpg");

@@ -1,11 +1,8 @@
 module.exports = {
   entry: {
     DeviceScan: './src/DeviceScan.jsx',
-    detail: './src/detail.jsx',
-    index: './src/index.jsx',
-    more: './src/more.jsx',
-    highstock: './src/highstock.jsx',
-    highmaps: './src/highmaps.jsx'
+    DeviceList: './src/DeviceList.jsx',
+    detail: './src/detail.jsx'
   },
   module: {
     loaders: [

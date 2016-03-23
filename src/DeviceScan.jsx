@@ -78,6 +78,6 @@ class DeviceScan extends Component {
 	  document.body
 	);
 
-require("file?name=[name].[ext]!./DeviceScan.html");
+require("file?name=[name].[ext]!./deviceScan.html");
 require("file?name=[name].[ext]!./charts.css");
 
