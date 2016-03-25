@@ -1,4 +1,7 @@
-<?php  $signPackage = getSignPackage();    // 获取jssdk配置包 ?>
+<?php
+  $signPackage = getSignPackage();    // 获取jssdk配置包 
+  $openid = get_openid();
+?>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -13,7 +16,6 @@
 <body>
 </body>
 </html>
-<script src="./DeviceScan.js"></script>
 
 <script>
   /*
@@ -27,6 +29,13 @@
    * 邮件主题：【微信JS-SDK反馈】具体问题
    * 邮件内容说明：用简明的语言描述问题所在，并交代清楚遇到该问题的场景，可附上截屏图片，微信团队会尽快处理你的反馈。
    */
+  var page_config = {
+    openid:'<?php echo $openid; ?>',
+    appId: '<?php echo $signPackage["appId"];?>',
+    timestamp: <?php echo $signPackage["timestamp"];?>,
+    nonceStr: '<?php echo $signPackage["nonceStr"];?>',
+    signature: '<?php echo $signPackage["signature"];?>'
+  };
   wx.config({
     debug: false,
     appId: '<?php echo $signPackage["appId"];?>',
@@ -68,7 +77,9 @@
         'openProductSpecificView',
         'addCard',
         'chooseCard',
-        'openCard'
+        'openCard',
+        'openWXDeviceLib',
+        'getWXDeviceTicket'
     ]
   });
 
@@ -85,7 +96,9 @@
   // jssdk注册失败时执行
   wx.error(function(){
     console.log ("jssdk register fail!");
-    alert("error");
+      alert('<?php echo ("aa=". $signPackage["appId"] ."---". $signPackage["timestamp"] ."---". $signPackage["nonceStr"] ."===". $signPackage["signature"]);?>');
+    //alert("error");
   });
 
 </script>
+<script src="{:FARM_TEMPLETE_PATH}/DeviceScan.js"></script>

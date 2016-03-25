@@ -4,3 +4,5 @@ dist
 *.swp
 *~
 cscope*
+dist.org
+webpack.config.js.orig
