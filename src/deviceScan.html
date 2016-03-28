@@ -1,7 +1,5 @@
 <?php
   $signPackage = getSignPackage();    // 获取jssdk配置包 
-  $openId = get_openid();
-  $accessToken = get_access_token ();
 ?>
 <!DOCTYPE html>
 <html>
@@ -31,8 +29,6 @@
    * 邮件内容说明：用简明的语言描述问题所在，并交代清楚遇到该问题的场景，可附上截屏图片，微信团队会尽快处理你的反馈。
    */
   var page_config = {
-    openid:'<?php echo $openId; ?>',
-    accessToken:'<?php echo $accessToken; ?>',
     appId: '<?php echo $signPackage["appId"];?>',
     timestamp: <?php echo $signPackage["timestamp"];?>,
     nonceStr: '<?php echo $signPackage["nonceStr"];?>',
@@ -40,4 +36,4 @@
   };
 
 </script>
-<script src="{:FARM_TEMPLETE_PATH}/DeviceScan.js"></script>
+<script src="{:FARM_TEMPLETE_PATH}/DeviceScan.js?v=3"></script>

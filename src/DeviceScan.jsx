@@ -11,7 +11,8 @@ class DeviceScan extends Component {
       qrcode:'',
       name:'',
       latitude:'',
-      longitude:''
+      longitude:'',
+      scanStatus:'free'
     };
   }
   componentDidMount () {
@@ -126,27 +127,35 @@ class DeviceScan extends Component {
   }
 
   postData () {
-    alert ("postData="+this.state.deviceid);
+    //alert ("postData="+this.state.deviceid);
     if (this.state.deviceid == '') {
       alert ("you must scan qrcode first!");
       return;
     }
-    //alert ("postData="+JSON.stringify({openid:page_config.openid, accessToken:page_config.accessToken, qrcode:this.state.qrcode, name:this.state.name, latitude:this.state.latitude, longitude:this.state.longitude}));
+    this.setState ({scanStatus:'commit'});
     wx.invoke('getWXDeviceTicket', {"deviceId":this.state.deviceid,"type":1}, function(res){
         var err_msg = res.err_msg;
         if (err_msg.indexOf(":ok") >= 0) {
-          alert ("get ticket1 = "+ res.ticket);
+          //alert ("get ticket1 = "+ res.ticket);
           $.ajax({
             type: "POST",
             url: ApiUrl.URL_API_DEVICE_BINDTOUSER,
-            //data: JSON.stringify({openid:page_config.openid,qrcode:"http://we.qq.com/d/AQCucyi-lj3pE2_Zon5LVu2SJLr4IGZrMDcDtuvO", name:"dapeng1", latitude:"11.111111", longitude:"22.222222"}),
-            data: JSON.stringify({openid:page_config.openid, access_token:page_config.accessToken, ticket:res.ticket, deviceid:this.state.deviceid, qrcode:this.state.qrcode, name:this.state.name, latitude:this.state.latitude, longitude:this.state.longitude}),
+            //data: JSON.stringify({qrcode:"http://we.qq.com/d/AQCucyi-lj3pE2_Zon5LVu2SJLr4IGZrMDcDtuvO", name:"dapeng1", latitude:"11.111111", longitude:"22.222222"}),
+            data: JSON.stringify({ticket:res.ticket, deviceid:this.state.deviceid, qrcode:this.state.qrcode, name:this.state.name, latitude:this.state.latitude, longitude:this.state.longitude}),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
-            success: function (data) {alert(JSON.stringify(data));},
-            failure: function (errMsg) {alert(JSON.stringify(errMsg));}
+            success: function (data) {
+              //alert(JSON.stringify(data));
+              console.log ("insert device ok:"+JSON.stringify(data));
+              this.setState ({scanStatus:'ok'});
+            }.bind(this),
+            failure: function (errMsg) {
+              alert(JSON.stringify(errMsg));
+              this.setState ({scanStatus:'fail'});
+            }.bind(this)
           });
         } else {
+          this.setState ({scanStatus:'fail'});
           alert ("get ticket fail!");
         }
       }.bind(this)
@@ -154,6 +163,7 @@ class DeviceScan extends Component {
   }
 
   render() {
+    console.log ("scanStatus:"+this.state.scanStatus);
 	    return (
 	    <div>
     	  <h1 className="text-center">设备扫描</h1>
@@ -184,6 +194,22 @@ class DeviceScan extends Component {
     	        <input type="button" className="btn btn-primary" onClick={this.postData.bind(this)} value="填写完确认提交"/>
     	      </div>
     	    </div>
+    	    { this.state.scanStatus == 'fail' &&
+            (
+          <div className="form-group">
+    	      <div className="col-xs-12 text-center">
+    	        <span>扫描失败，是否超时，可重新进入此页面</span>
+    	      </div>
+    	    </div>)
+          }
+    	    { this.state.scanStatus == 'ok' &&
+            (
+          <div className="form-group">
+    	      <div className="col-xs-12 text-center">
+    	        <span>扫描成功</span>
+    	      </div>
+    	    </div>)
+          }
     	    <div className="form-group">
     	      <div className="col-xs-4 col-xs-push-8">
     	        <a href="#" className="btn btn-primary btn-xs active" role="button">进入设备列表</a>
