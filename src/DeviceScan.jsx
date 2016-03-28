@@ -15,11 +15,88 @@ class DeviceScan extends Component {
     };
   }
   componentDidMount () {
+    wx.config({
+      beta:true,
+      debug: false,
+      appId: page_config.appId,
+      timestamp: page_config.timestamp,
+      nonceStr: page_config.nonceStr,
+      signature: page_config.signature,
+      jsApiList: [
+          // 所有要调用的 API 都要加到这个列表中
+          'checkJsApi',
+          'onMenuShareTimeline',
+          'onMenuShareAppMessage',
+          'onMenuShareQQ',
+          'onMenuShareWeibo',
+          'hideMenuItems',
+          'showMenuItems',
+          'hideAllNonBaseMenuItem',
+          'showAllNonBaseMenuItem',
+          'translateVoice',
+          'startRecord',
+          'stopRecord',
+          'onRecordEnd',
+          'playVoice',
+          'pauseVoice',
+          'stopVoice',
+          'uploadVoice',
+          'downloadVoice',
+          'chooseImage',
+          'previewImage',
+          'uploadImage',
+          'downloadImage',
+          'getNetworkType',
+          'openLocation',
+          'getLocation',
+          'hideOptionMenu',
+          'showOptionMenu',
+          'closeWindow',
+          'scanQRCode',
+          'chooseWXPay',
+          'openProductSpecificView',
+          'addCard',
+          'chooseCard',
+          'openCard',
+          'openWXDeviceLib',
+          'getWXDeviceTicket'
+      ]
+    });
+
+    // jssdk注册成功后执行
+    wx.ready(function () {
+      console.log ("jssdk register ok!");
+      wx.getLocation({
+        type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
+        success: function (res) {
+          //alert ("success get location");
+          var latitude = res.latitude; // 纬度，浮点数，范围为90 ~ -90
+          var longitude = res.longitude; // 经度，浮点数，范围为180 ~ -180。
+          var speed = res.speed; // 速度，以米/每秒计
+          var accuracy = res.accuracy; // 位置精度
+          //alert("latitude="+latitude+", longitude="+longitude+", speed="+speed+", accuracy="+accuracy);
+          this.setState({latitude:latitude, longitude:longitude});
+        }.bind(this)
+      });
+
+      //alert ("get location");
+      wx.invoke('openWXDeviceLib', {}, function(res){
+        //alert(res.err_msg);
+      });
+      //alert ("openWXDeviceLib");
+    }.bind(this));
+
+    // jssdk注册失败时执行
+    wx.error(function(){
+      console.log ("jssdk register fail!");
+      alert("error");
+    });
+
+    // get_bind_device
 
   }
 
   scanQRCode () {
-    let that = this;
     //this.setState ({qrcode:"aadfadsfdsfsd" });
     wx.scanQRCode({
       needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
@@ -34,7 +111,7 @@ class DeviceScan extends Component {
           contentType: "application/json; charset=utf-8",
           dataType: "json",
           success: function (data) {
-            alert(JSON.stringify(data));
+            //alert(JSON.stringify(data));
             var devices = data.devices;
             if (devices !== null && devices !== undefined && devices.length > 0) {
               this.setState({deviceid:devices[0].deviceid});
@@ -49,17 +126,31 @@ class DeviceScan extends Component {
   }
 
   postData () {
-    $.ajax({
-      type: "POST",
-      //url: ApiUrl.URL_API_DEVICE_BINDTOUSER+"/token/gh_9e62dd855eff",
-      url: ApiUrl.URL_API_DEVICE_BINDTOUSER,
-      data: JSON.stringify({openid:page_config.openid,qrcode:"http://we.qq.com/d/AQCucyi-lj3pE2_Zon5LVu2SJLr4IGZrMDcDtuvO", name:"dapeng1", latitude:"11.111111", longitude:"22.222222"}),
-      //data: JSON.stringify({qrcode:""+this.state.qrcode, name:""+this.state.name, latitude:""+this.state.latitude, longitude:""+this.state.longitude}),
-      contentType: "application/json; charset=utf-8",
-      dataType: "json",
-      success: function (data) {alert(JSON.stringify(data));},
-      failure: function (errMsg) {alert(JSON.stringify(errMsg));}
-    });
+    alert ("postData="+this.state.deviceid);
+    if (this.state.deviceid == '') {
+      alert ("you must scan qrcode first!");
+      return;
+    }
+    //alert ("postData="+JSON.stringify({openid:page_config.openid, accessToken:page_config.accessToken, qrcode:this.state.qrcode, name:this.state.name, latitude:this.state.latitude, longitude:this.state.longitude}));
+    wx.invoke('getWXDeviceTicket', {"deviceId":this.state.deviceid,"type":1}, function(res){
+        var err_msg = res.err_msg;
+        if (err_msg.indexOf(":ok") >= 0) {
+          alert ("get ticket1 = "+ res.ticket);
+          $.ajax({
+            type: "POST",
+            url: ApiUrl.URL_API_DEVICE_BINDTOUSER,
+            //data: JSON.stringify({openid:page_config.openid,qrcode:"http://we.qq.com/d/AQCucyi-lj3pE2_Zon5LVu2SJLr4IGZrMDcDtuvO", name:"dapeng1", latitude:"11.111111", longitude:"22.222222"}),
+            data: JSON.stringify({openid:page_config.openid, access_token:page_config.accessToken, ticket:res.ticket, deviceid:this.state.deviceid, qrcode:this.state.qrcode, name:this.state.name, latitude:this.state.latitude, longitude:this.state.longitude}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {alert(JSON.stringify(data));},
+            failure: function (errMsg) {alert(JSON.stringify(errMsg));}
+          });
+        } else {
+          alert ("get ticket fail!");
+        }
+      }.bind(this)
+    );
   }
 
   render() {
@@ -81,8 +172,8 @@ class DeviceScan extends Component {
     	    <div className="form-group">
     	      <label htmlFor="longitude" className="col-xs-3 control-label text-nowrap">地理位置</label>
     	      <div className="col-xs-5 no-padding-horizontal">
-    	        <input type="text" className="form-control" id="longitude" placeholder="121.419947" readOnly/>
-    	        <input type="text" className="form-control" id="latitude" placeholder="31.207947" readOnly/>
+    	        <input type="text" className="form-control" id="longitude" placeholder="111.111111" value={this.state.longitude} readOnly/>
+    	        <input type="text" className="form-control" id="latitude" placeholder="22.222222" value={this.state.latitude} readOnly/>
     	      </div>
     	      <div className="col-xs-4">
     	        <input type="button" className="btn btn-info text-wrap" value="进入地图手动选择位置"/>
@@ -90,7 +181,7 @@ class DeviceScan extends Component {
     	    </div>
     	    <div className="form-group">
     	      <div className="col-xs-12 text-center">
-    	        <input type="button" className="btn btn-primary" onClick={this.postData} value="填写完确认提交"/>
+    	        <input type="button" className="btn btn-primary" onClick={this.postData.bind(this)} value="填写完确认提交"/>
     	      </div>
     	    </div>
     	    <div className="form-group">
