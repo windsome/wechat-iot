@@ -1,6 +1,8 @@
 module.exports = {
   entry: {
-    DeviceScan: './src/DeviceScan.jsx'
+    DeviceScan: './src/DeviceScan.jsx',
+    DeviceList: './src/DeviceList.jsx',
+    detail: './src/detail.jsx'
   },
   module: {
     loaders: [
