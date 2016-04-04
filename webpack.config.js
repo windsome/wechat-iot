@@ -1,8 +1,6 @@
 module.exports = {
   entry: {
-    DeviceScan: './src/DeviceScan.jsx',
-    DeviceList: './src/DeviceList.jsx',
-    detail: './src/detail.jsx'
+    IotPage: './src/IotPage.jsx'
   },
   module: {
     loaders: [
@@ -11,7 +9,10 @@ module.exports = {
         loader: 'babel',
         query: {
           cacheDirectory: true,
-          presets: ['react','es2015', 'stage-2']
+          plugins: [
+            'transform-runtime'
+          ],
+          presets: ['react','es2015', 'stage-0']
         }
       }
     ]
