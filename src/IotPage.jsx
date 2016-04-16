@@ -59,7 +59,7 @@ class IotPage extends Component {
     console.log ("window.location="+window.location);
     this.getDeviceList (0);
     this.MQTTconnect ();
-    //this.WXConfig ();
+    this.WXConfig ();
   }
 
   WXConfig () {
