@@ -1,3 +1,7 @@
+<?php
+    $signPackage = getSignPackage();    // 获取jssdk配置包 
+    $token = get_token();
+?>
 <!DOCTYPE html>
 <html>
 <head lang="en">
@@ -5,15 +9,24 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
     <meta name="viewport" content="width=device-width, initial-scale=1"/>
     <title>设备列表</title>
-    <link rel="stylesheet" href="bootstrap.min.css"/>
-    <link rel="stylesheet" href="charts.css"/>
-    <script src="jquery.min.js"></script>
+    <link rel="stylesheet" href="{:FARM_TEMPLETE_PATH}/bootstrap.min.css"/>
+    <link rel="stylesheet" href="{:FARM_TEMPLETE_PATH}/charts.css"/>
+    <script src="{:FARM_TEMPLETE_PATH}/jquery.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.0.0.js"></script>
 </head>
 <body>
   <script>
+    var page_config = {
+      token:'<?php echo $token; ?>',
+      appId: '<?php echo $signPackage["appId"];?>',
+      timestamp: <?php echo $signPackage["timestamp"];?>,
+      nonceStr: '<?php echo $signPackage["nonceStr"];?>',
+      signature: '<?php echo $signPackage["signature"];?>'
+    };
   
   </script>
-  <script src="ScrollSpyPage.js?v=6"></script>
+  <script src="{:FARM_TEMPLETE_PATH}/mqttws31.js"></script>
+  <script src="{:FARM_TEMPLETE_PATH}/TestPage.js?v=6"></script>
 </body>
 </html>
 
