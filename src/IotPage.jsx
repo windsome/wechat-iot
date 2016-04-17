@@ -350,6 +350,7 @@ class IotPage extends Component {
   }
 
 	render () {
+    console.log ("com name:"+(this.state.current_component &&  this.state.current_component.name));
 	  return (
     <div>
       { this.state.current_component &&  this.state.current_component.name == 'scan' &&
