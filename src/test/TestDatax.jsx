@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react';
 import * as ReactDOM from 'react-dom';
-import * as ApiUrl from './Constants.jsx';
+import * as ApiUrl from '../Constants.jsx';
 
 export default class TestDatax extends Component {
   constructor (props) {

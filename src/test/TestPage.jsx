@@ -78,8 +78,8 @@ class TestPage extends Component {
 	);
 
 require("file?name=[name].[ext]!./testPage.html");
-require("file?name=[name].[ext]!./charts.css");
-require("file?name=[name].[ext]!./mqttws31.js");
-require("file?name=[name].[ext]!./bootstrap.min.css");
-require("file?name=[name].[ext]!./jquery.min.js");
+require("file?name=[name].[ext]!../charts.css");
+require("file?name=[name].[ext]!../mqttws31.js");
+require("file?name=[name].[ext]!../bootstrap.min.css");
+require("file?name=[name].[ext]!../jquery.min.js");
 

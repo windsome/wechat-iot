@@ -349,10 +349,20 @@ class IotPage extends Component {
     }
   }
 
+  invokeTest (action) {
+    this.setState ({action: action});
+  }
+
 	render () {
     console.log ("com name:"+(this.state.current_component &&  this.state.current_component.name));
 	  return (
     <div>
+      <div className="btn-group" role="group" aria-label="Menu">
+        <button type="button" className="btn btn-default">扫描设备</button>
+        <button type="button" className="btn btn-default">设备列表</button>
+        <button type="button" className="btn btn-default">Right</button>
+      </div>
+
       { this.state.current_component &&  this.state.current_component.name == 'scan' &&
       (<DeviceScanComp device={this.state.device_scan} scanResult={this.state.scan_result} onScanQRCode={this.scanQRCode.bind(this)} onBindDevice={this.bindDevice.bind(this)} gotoDeviceList={this.gotoDeviceList.bind(this)}/>)
       }

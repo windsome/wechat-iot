@@ -1,6 +1,6 @@
 module.exports = {
   entry: {
-    IotPage: './src/IotPage.jsx'
+    IotPage2: './src/iot1/IotPage2.jsx'
   },
   module: {
     loaders: [
