@@ -26,7 +26,7 @@ export default class DeviceList extends Component {
   }
   componentWillUnmount() {
     this.intervals.map(clearInterval);
-    if(this.serverRequest) this.serverRequest.abort();
+    if(this.dataxRequest) this.dataxRequest.abort();
     if(this.deviceRequest) this.deviceRequest.abort();
   }
   componentDidMount() {
@@ -154,6 +154,36 @@ export default class DeviceList extends Component {
 
     return (
       <tr key={index}>
+        <td>
+          <div>
+            <a className="text-nowrap" onClick={(e)=>this.props.gotoDeviceDetail(device)}>{device.deviceid}</a>
+          </div>
+          <div>{device.info && device.info.name || "未命名"}---设备型号:{device.productid}</div>
+
+          <div>
+            {sensor_html || "无数据"}
+          </div>
+        </td>
+      </tr>
+    );
+    } catch (e) {
+      console.log ("renderDevice");
+      console.log (e);
+    }
+  }
+  renderDevice2 (device, index) {
+    try {
+    var id = device.deviceid;
+    var sensor_html = this.state.devices_datax[id] && 
+      this.state.devices_datax[id].map ((dataxid, index)=>{
+        var datax1 = this.state.datax[dataxid];
+        return (
+          <span key={datax1.id} className="text-nowrap">{datax1.type}：{datax1.val} - {datax1.time} <br/></span>
+        );
+      });
+
+    return (
+      <tr key={index}>
           <td scope="row">1</td>
           <td className="wordbreak">{device.deviceid}</td>
           <td>
@@ -182,12 +212,12 @@ export default class DeviceList extends Component {
     return (
         <div className="table-reponsive">
             <table className="table table-bordered table-striped">
-                <thead><tr>
+                {/*<thead><tr>
                   <th>#</th>
                   <th className="text-nowrap">设备名称</th>
                   <th className="text-nowrap">设备状态</th>
                   <th>操作</th>
-                </tr></thead>
+                </tr></thead>*/}
                 <tbody>
                   {deviceList2}
                 </tbody>

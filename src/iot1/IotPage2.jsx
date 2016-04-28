@@ -27,6 +27,7 @@ import * as ReactDOM from 'react-dom';
 import * as ApiUrl from '../Constants.jsx';
 import DeviceScan from './DeviceScan.jsx';
 import DeviceList from './DeviceList.jsx';
+import DeviceDetail from './DeviceDetail.jsx';
 
 var WX_STATUS_STRING = {
   "none": "",
@@ -149,23 +150,30 @@ class IotPage2 extends Component {
   }
 
   viewDetail (device) {
+    console.log ("viewDetail:");
+    console.log (device);
     this.setState ({action:'detail', detail_device: device});
   }
 
   renderAction () {
+    try {
     var comp;
     if (this.state.action == 'scan') {
       if (this.state.wx_config_status == 'ok')
         comp = (<DeviceScan />);
     } else if (this.state.action == 'list')
-      comp = (<DeviceList />);
+      comp = (<DeviceList gotoDeviceDetail={this.viewDetail.bind(this)}/>);
     else if (this.state.action == 'detail')
-      comp = (<DeviceDetail device={this.state.detail_device} gotoDeviceDetail={this.viewDetail.bind(this)}/>);
+      comp = (<DeviceDetail device={this.state.detail_device}/>);
     else if (this.state.action == 'help')
       comp = (<DeviceScan />);
     else if (this.state.action == 'none') {
       if (this.state.wx_config_status == 'ok')
-        comp = (<DeviceList />);
+        comp = (<DeviceList gotoDeviceDetail={this.viewDetail.bind(this)}/>);
+    }
+    } catch (e) {
+      console.log ("error:");
+      console.log (e);
     }
     return comp;
   }
