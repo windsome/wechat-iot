@@ -120,6 +120,7 @@ export default class DeviceList extends Component {
           console.log (devices);*/
           this.setState({list_status:'ok', deviceArray:deviceArray, devices:devices});
           // get sensor data.
+          this.updateSensorData();
           this.setInterval(this.updateSensorData.bind(this), 5000);
         } else {
           console.log ("got no devices");
@@ -210,7 +211,7 @@ export default class DeviceList extends Component {
         return this.renderDevice (this.state.devices[deviceid], index);
     });
     return (
-        <div className="table-reponsive">
+        <div className="table-responsive">
             <table className="table table-bordered table-striped">
                 {/*<thead><tr>
                   <th>#</th>

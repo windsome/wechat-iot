@@ -3,7 +3,7 @@ var d3 = require('d3');
 
 var width = 300;
 var height = 300;
-var padding = {left: 50, right:50, top: 50, bottom: 50 };
+var padding = {left: 20, right:10, top: 20, bottom: 10 };
 
 var ns = {};
 
@@ -101,7 +101,7 @@ ns._drawTree = function(source) {
     console.log (links);
 
     //重新计算节点的y坐标
-    nodes.forEach(function(d) { d.y = d.depth * 100; });
+    nodes.forEach(function(d) { d.y = d.depth * 100+50; });
 
     /*
     （2） 节点的处理
