@@ -58,7 +58,7 @@ export default class DeviceDetail extends Component {
     let url = ApiUrl.URL_API_DEVICE_GETDATAXHISTORY+"/deviceid/"+deviceid+"/begintime/"+this.endtime;
     this.serverRequest = $.get(url, function (result) {
       // update sensors. then trick a timed reget.
-      console.log ("componentDidMount getDataxHistory:");
+      console.log ("getDataxHistory:");
       console.log (result);
       if (result.response == 'success') {
         this.endtime = result.endtime;
@@ -71,12 +71,12 @@ export default class DeviceDetail extends Component {
           result.sensors.map ((sensor, i) => {
             var subid = sensor.subid;
             var type = sensor.type;
-            if (sensor.data && sensor.data.length > 0) {
+            /*if (sensor.data && sensor.data.length > 0) {
               var value = sensor.data.map ((item) => {
                 return [item[0]*1000, item[1]];
               });
               sensor.data = value;
-            }
+            }*/
             var dest_sensor = -1;
             for (var i = 0; i< sensors_update.length; i++) {
               if (sensors_update[i].subid == subid) {
@@ -144,7 +144,7 @@ export default class DeviceDetail extends Component {
     var sensors = this.state.sensors && this.state.sensors.map ((sensor, index) => {
       var last_data = sensor.data && sensor.data.length > 0 && sensor.data[sensor.data.length - 1];
       var data_value = last_data && (last_data[1]) || "无数据";
-      var data_time = last_data && (new Date(last_data[0]));
+      var data_time = last_data && (new Date(last_data[0]*1000));
       var data_time_str = "";
       if (data_time) {
         data_time_str = (data_time.getMonth()+1)+"-"+data_time.getDate()+" "+data_time.getHours()+":"+data_time.getMinutes()+":"+data_time.getSeconds();
@@ -162,7 +162,7 @@ export default class DeviceDetail extends Component {
       <div className="table-responsive">
         <table className="table table-bordered table-striped">
           <tbody>
-            {sensors || (<tr><td>无数据</td></tr>)}
+            {((sensors.length > 0) && sensors) || (<tr><td><div>无数据</div></td></tr>)}
           </tbody>
         </table>
       </div>
@@ -182,6 +182,14 @@ export default class DeviceDetail extends Component {
   }
 
   renderLines () {
+    var start = Date.parse(new Date())/1000 - this.state.dayDistance*24*60*60;
+    var duration = this.state.dayDistance*24*60*60;
+    var lines = this.state.sensors.map ((sensor, index) => {
+      return (
+        <ChartLine start={start} duration={duration} dataset={sensor.data}/>
+      );
+    });
+
     return (
       <div>
         <h3>传感器曲线</h3>
@@ -192,10 +200,10 @@ export default class DeviceDetail extends Component {
           <button type="button" className={classNames("btn", this.state.dayDistance==365?"btn-primary":"btn-default")} onClick={this.setDayDistance.bind(this, 365)}>365天</button>
         </div>
         <div>
+          {(lines.length>0 && lines) || '无曲线数据'}
+          {/*<ChartLine />
           <ChartLine />
-          <ChartLine />
-          <ChartLine />
-          <ChartLine />
+          <ChartLine />*/}
         </div>
       </div>
     );
@@ -203,6 +211,7 @@ export default class DeviceDetail extends Component {
 
   render () {
     try {
+    console.log ("DeviceDetail render()");
     return (
       <div>
         <div>
