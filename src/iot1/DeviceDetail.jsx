@@ -187,11 +187,11 @@ export default class DeviceDetail extends Component {
   }
 
   renderLines () {
-    var start = Date.parse(new Date())/1000 - this.state.dayDistance*24*60*60;
     var duration = this.state.dayDistance*24*60*60;
+    var start = Date.parse(new Date())/1000 - duration;
     var lines = this.state.sensors.map ((sensor, index) => {
       return (
-        <ChartLine start={start} duration={duration} dataset={sensor.data}/>
+        <ChartLine start={start} duration={duration} sensor={sensor}/>
       );
     });
 
