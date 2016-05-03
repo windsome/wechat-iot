@@ -2,6 +2,7 @@ import React, { Component, PropTypes } from 'react';
 import * as ReactDOM from 'react-dom';
 import Chart from './Chart.jsx';
 import ChartLine from './ChartLine.jsx';
+import Qrcode from './Qrcode.jsx';
 import * as ApiUrl from '../Constants.jsx';
 var classNames = require('classnames');
 
@@ -129,7 +130,11 @@ export default class DeviceDetail extends Component {
               </tr>
               <tr>
                 <td>二维码</td>
-                <td>{device.qrcode}</td>
+                <td><div className="text-justify">{device.qrcode}</div></td>
+              </tr>
+              <tr>
+                <td>二维码</td>
+                <td><div><Qrcode content={device.qrcode}/></div></td>
               </tr>
             </tbody>
           </table>
