@@ -211,3 +211,6 @@
     height:160px;
 }
 
+.text-content{
+    text-indent: 2em; /*em是相对单位，2em即现在一个字大小的两倍*/
+}

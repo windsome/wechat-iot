@@ -28,6 +28,7 @@ import * as ApiUrl from '../Constants.jsx';
 import DeviceScan from './DeviceScan.jsx';
 import DeviceList from './DeviceList.jsx';
 import DeviceDetail from './DeviceDetail.jsx';
+import Help from './Help.jsx';
 
 var WX_STATUS_STRING = {
   "none": "",
@@ -166,7 +167,7 @@ class IotPage2 extends Component {
     else if (this.state.action == 'detail')
       comp = (<DeviceDetail device={this.state.detail_device}/>);
     else if (this.state.action == 'help')
-      comp = (<DeviceScan />);
+      comp = (<Help/>);
     else if (this.state.action == 'none') {
       if (this.state.wx_config_status == 'ok')
         comp = (<DeviceList gotoDeviceDetail={this.viewDetail.bind(this)}/>);
