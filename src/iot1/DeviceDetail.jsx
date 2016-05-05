@@ -27,7 +27,7 @@ export default class DeviceDetail extends Component {
     this.gaugeCharts = {};
     this.lineCharts = {};
 
-    this.endtime = Date.parse(new Date())/1000 - 3*24*60*60;
+    //this.endtime = Date.parse(new Date())/1000 - 24*60*60;
   }
 
   setInterval() {
@@ -56,13 +56,13 @@ export default class DeviceDetail extends Component {
       return;
     }
 
-    let url = ApiUrl.URL_API_DEVICE_GETDATAXHISTORY+"/deviceid/"+deviceid+"/begintime/"+this.endtime;
+    let url = ApiUrl.URL_API_DEVICE_GETDATAXHISTORY+"/deviceid/"+deviceid+"/begintime/"+this.state.endtime;
     this.serverRequest = $.get(url, function (result) {
       // update sensors. then trick a timed reget.
       console.log ("getDataxHistory:");
       console.log (result);
       if (result.response == 'success') {
-        this.endtime = result.endtime;
+        //this.state.endtime = result.endtime;
         //this.setState ({sensors2:result.sensors});
         //this.setInterval(this.updateSensorData.bind(this), 10000);
 
@@ -95,6 +95,7 @@ export default class DeviceDetail extends Component {
           });
           this.setState ({sensors: sensors_update});
         }
+        this.setState ({endtime: result.endtime});
       }
     }.bind(this));
     } catch (e) {
@@ -181,9 +182,9 @@ export default class DeviceDetail extends Component {
   
   setDayDistance (days) {
     if(this.serverRequest) this.serverRequest.abort();
-    //endtime = Date.parse(new Date())/1000 - days*24*60*60;
-    this.endtime = Date.parse(new Date())/1000 - days*24*60*60;
-    this.setState({dayDistance: days, sensors: []});
+    var endtime = Date.parse(new Date())/1000 - days*24*60*60;
+    //this.state.endtime = Date.parse(new Date())/1000 - days*24*60*60;
+    this.setState({dayDistance: days, endtime: endtime, sensors: []});
   }
 
   renderLines () {

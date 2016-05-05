@@ -39,8 +39,10 @@ var xScale = d3.time.scale()
     
 //    .domain(d3.extent(dataset, function(d) { return d[0]; }))
 
+var yMin = d3.min (dataset, function(d){ return d[1]; });
+    yMin = yMin < 0 ? yMin : 0;
 var yScale = d3.scale.linear()
-    .domain([0, d3.max(dataset, function(d){ return d[1]; })])
+    .domain([yMin, d3.max(dataset, function(d){ return d[1]; })])
     .range([height, 0]);
 
 var customTimeFormat = d3.time.format.multi([
