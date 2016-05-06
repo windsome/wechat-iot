@@ -19,7 +19,8 @@ ns.create = function(el, sensor, start, duration) {
       height = container_height - margin.top - margin.bottom;
       
     dataset.forEach(function(d) {
-      d[0] = new Date(d[0]*1000);
+      //d[0] = new Date(d[0]*1000);
+      d.time = new Date(d[0]*1000);
     });
 
   try {
@@ -82,8 +83,10 @@ var yAxis = d3.svg.axis()
     */
 
 var line = d3.svg.line()
-    .x(function(d) { return xScale(d[0]); })
+    .x(function(d) { return xScale(d.time); })
     .y(function(d) { return yScale(d[1]); });
+
+//    .x(function(d) { return xScale(d[0]); })
 
 var svg = d3.select(el).append("svg")
     .attr("width", width + margin.left + margin.right)

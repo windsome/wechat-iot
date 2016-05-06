@@ -207,6 +207,7 @@ class IotPage2 extends Component {
 	);
 
 require("file?name=[name].[ext]!./iotPage2.html");
+require("file?name=[name].[ext]!./iotPage3.html");
 require("file?name=[name].[ext]!../charts.css");
 require("file?name=[name].[ext]!../mqttws31.js");
 require("file?name=[name].[ext]!../bootstrap.min.css");

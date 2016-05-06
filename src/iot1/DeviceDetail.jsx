@@ -59,7 +59,7 @@ export default class DeviceDetail extends Component {
     let url = ApiUrl.URL_API_DEVICE_GETDATAXHISTORY+"/deviceid/"+deviceid+"/begintime/"+this.state.endtime;
     this.serverRequest = $.get(url, function (result) {
       // update sensors. then trick a timed reget.
-      console.log ("getDataxHistory:");
+      console.log ("getDataxHistory:"+JSON.stringify(result));
       console.log (result);
       if (result.response == 'success') {
         //this.state.endtime = result.endtime;
@@ -155,6 +155,7 @@ export default class DeviceDetail extends Component {
       if (data_time) {
         data_time_str = (data_time.getMonth()+1)+"-"+data_time.getDate()+" "+data_time.getHours()+":"+data_time.getMinutes()+":"+data_time.getSeconds();
       }
+      console.log ("data_time="+JSON.stringify(data_time)+",data_time_str="+data_time_str+",last_data="+JSON.stringify(last_data));
       return (
         <tr key={index}>
           <td>{sensor.type}-{sensor.subid} </td>
@@ -191,6 +192,7 @@ export default class DeviceDetail extends Component {
     var duration = this.state.dayDistance*24*60*60;
     var start = Date.parse(new Date())/1000 - duration;
     var lines = this.state.sensors.map ((sensor, index) => {
+      //var sensor2 = Object.assign ({}, sensor);
       return (
         <ChartLine start={start} duration={duration} sensor={sensor}/>
       );
@@ -218,6 +220,7 @@ export default class DeviceDetail extends Component {
   render () {
     try {
     console.log ("DeviceDetail render()");
+    console.log (this.state.sensors);
     return (
       <div>
         <div>
