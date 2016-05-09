@@ -149,7 +149,8 @@ export default class DeviceDetail extends Component {
     try {
     var sensors = this.state.sensors && this.state.sensors.map ((sensor, index) => {
       var last_data = sensor.data && sensor.data.length > 0 && sensor.data[sensor.data.length - 1];
-      var data_value = last_data && (last_data[1]) || "无数据";
+      var data_value = last_data && last_data[1];
+      if (!last_data) data_value = "无数据";
       var data_time = last_data && (new Date(last_data[0]*1000));
       var data_time_str = "";
       if (data_time) {
