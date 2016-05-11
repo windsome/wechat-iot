@@ -28,6 +28,7 @@ import * as ApiUrl from '../Constants.jsx';
 import DeviceScan from './DeviceScan.jsx';
 import DeviceList from './DeviceList.jsx';
 import DeviceDetail from './DeviceDetail.jsx';
+import Help from './Help.jsx';
 
 var WX_STATUS_STRING = {
   "none": "",
@@ -166,7 +167,7 @@ class IotPage2 extends Component {
     else if (this.state.action == 'detail')
       comp = (<DeviceDetail device={this.state.detail_device}/>);
     else if (this.state.action == 'help')
-      comp = (<DeviceScan />);
+      comp = (<Help/>);
     else if (this.state.action == 'none') {
       if (this.state.wx_config_status == 'ok')
         comp = (<DeviceList gotoDeviceDetail={this.viewDetail.bind(this)}/>);
@@ -206,8 +207,10 @@ class IotPage2 extends Component {
 	);
 
 require("file?name=[name].[ext]!./iotPage2.html");
+require("file?name=[name].[ext]!./iotPage3.html");
 require("file?name=[name].[ext]!../charts.css");
 require("file?name=[name].[ext]!../mqttws31.js");
 require("file?name=[name].[ext]!../bootstrap.min.css");
 require("file?name=[name].[ext]!../jquery.min.js");
+require("file?name=[name].[ext]!../qrcode.js");
 

@@ -5,6 +5,7 @@ import * as ApiUrl from '../Constants.jsx';
 export default class DeviceList extends Component {
   state = {
     list_status:'none',
+    list_status_str:'',
     devices: {},
     deviceArray: [],
     devices_datax: {},
@@ -49,8 +50,8 @@ export default class DeviceList extends Component {
       contentType: "application/json; charset=utf-8",
       dataType: "json",
       success: function (result) {
-        //console.log ("Datax updateSensorData getDataxLatestList:"+JSON.stringify(result));
-        //console.log (result);
+        console.log ("Datax updateSensorData:");
+        console.log (result);
         if (result.response == 'success') {
           //console.log ("result.sensors="+JSON.stringify(result.sensors)+", length="+result.sensors.length);
           if (result.datax && result.datax.length > 0) {
@@ -69,8 +70,8 @@ export default class DeviceList extends Component {
 
             devices_datax = Object.assign ({}, this.state.devices_datax, devices_datax);
             datax = Object.assign ({}, this.state.datax, datax);
-            //console.log (devices_datax);
-            //console.log (datax);
+            console.log ("datax:");
+            console.log (datax);
             this.setState ({datax:datax, devices_datax: devices_datax, endtime: result.endtime});
           } else {
             this.setState ({endtime: result.endtime});
@@ -81,7 +82,7 @@ export default class DeviceList extends Component {
       }.bind(this),
       failure: function (errMsg) {
         console.log("fail:"+JSON.stringify(errMsg));
-        this.setState({list_status:'fail'});
+        this.setState({list_status:'fail',list_status_str:JSON.stringify(errMsg)});
       }.bind(this)
     });
   }
@@ -124,12 +125,12 @@ export default class DeviceList extends Component {
           this.setInterval(this.updateSensorData.bind(this), 5000);
         } else {
           console.log ("got no devices");
-          this.setState({list_status:'fail'});
+          this.setState({list_status:'fail', list_status_str:data.response_str || ''});
         }
       }.bind(this),
       failure: function (errMsg) {
         console.log("fail:"+JSON.stringify(errMsg));
-        this.setState({list_status:'fail'});
+        this.setState({list_status:'fail', list_status_str:JSON.stringify(errMsg)});
       }.bind(this)
     });
   }
@@ -148,8 +149,13 @@ export default class DeviceList extends Component {
     var sensor_html = this.state.devices_datax[id] && 
       this.state.devices_datax[id].map ((dataxid, index)=>{
         var datax1 = this.state.datax[dataxid];
+        var data_time = datax1 && datax1.time && (new Date(datax1.time*1000));
+        var data_time_str = "";
+        if (data_time) {
+          data_time_str = (data_time.getMonth()+1)+"-"+data_time.getDate()+" "+data_time.getHours()+":"+data_time.getMinutes()+":"+data_time.getSeconds();
+        }
         return (
-          <span key={datax1.id} className="text-nowrap">{datax1.type}：{datax1.val} - {datax1.time} <br/></span>
+          <span key={datax1.id} className="text-nowrap">{datax1.type}：{datax1.val}  <sub>{data_time_str}</sub> <br/></span>
         );
       });
 
@@ -178,8 +184,13 @@ export default class DeviceList extends Component {
     var sensor_html = this.state.devices_datax[id] && 
       this.state.devices_datax[id].map ((dataxid, index)=>{
         var datax1 = this.state.datax[dataxid];
+        var data_time = datax1 && datax1.time && (new Date(datax1.time*1000));
+        var data_time_str = "";
+        if (data_time) {
+          data_time_str = (data_time.getMonth()+1)+"-"+data_time.getDate()+" "+data_time.getHours()+":"+data_time.getMinutes()+":"+data_time.getSeconds();
+        }
         return (
-          <span key={datax1.id} className="text-nowrap">{datax1.type}：{datax1.val} - {datax1.time} <br/></span>
+          <span key={datax1.id} className="text-nowrap">{datax1.type}：{datax1.val} - <sub>{data_time_str}</sub><br/></span>
         );
       });
 
@@ -235,9 +246,13 @@ export default class DeviceList extends Component {
     //console.log ("DeviceList: render()");
     try {
     var deviceList = this.renderDeviceList ();
+    var errMsg = '';
+    if (this.state.list_status == 'fail')
+      errMsg = "错误消息："+this.state.list_status_str;
 	  return (
 	  <div>
   	  <h1 className="text-center">设备列表</h1>
+      {errMsg}
       {deviceList}
 	  </div>
 	  );
