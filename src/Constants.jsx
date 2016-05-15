@@ -14,6 +14,7 @@ export const URL_API_DEVICE_GETDATAXLATESTLIST= URL_BASE_API+'/Device/getDataxLa
 export const URL_API_DEVICE_FW_UPLOAD= URL_BASE_API+'/Device/firmwareUpload'
 export const URL_API_DEVICE_FW_DELETE= URL_BASE_API+'/Device/firmwareDelete'
 export const URL_API_DEVICE_FW_LIST= URL_BASE_API+'/Device/firmwareList'
+export const URL_API_DEVICE_CMD_UPDATE= URL_BASE_API+'/Device/updateCmd'
 
 const URL_BASE_ADDON = URL_BASE+'?s=/addon'
 export const URL_ADDON_DEVICE = URL_BASE_ADDON + '/HelloWorld'
