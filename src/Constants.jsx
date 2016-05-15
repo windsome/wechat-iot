@@ -11,6 +11,9 @@ export const URL_API_DEVICE_GETDEVICELIST= URL_BASE_API+'/Device/get_device_list
 export const URL_API_DEVICE_DATAX= URL_BASE_API+'/Device/datax'
 export const URL_API_DEVICE_GETDATAXHISTORY= URL_BASE_API+'/Device/getDataxHistory'
 export const URL_API_DEVICE_GETDATAXLATESTLIST= URL_BASE_API+'/Device/getDataxLatestList'
+export const URL_API_DEVICE_FW_UPLOAD= URL_BASE_API+'/Device/firmwareUpload'
+export const URL_API_DEVICE_FW_DELETE= URL_BASE_API+'/Device/firmwareDelete'
+export const URL_API_DEVICE_FW_LIST= URL_BASE_API+'/Device/firmwareList'
 
 const URL_BASE_ADDON = URL_BASE+'?s=/addon'
 export const URL_ADDON_DEVICE = URL_BASE_ADDON + '/HelloWorld'

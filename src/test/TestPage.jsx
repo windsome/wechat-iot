@@ -25,6 +25,7 @@ if (typeof Object.assign != 'function') {
 import React, { Component, PropTypes } from 'react';
 import * as ReactDOM from 'react-dom';
 import TestDatax from './TestDatax.jsx';
+import TestFirmware from './TestFirmware.jsx';
 
 class TestPage extends Component {
   constructor (props) {
@@ -44,7 +45,7 @@ class TestPage extends Component {
     return (
     <div className="btn-group" role="group" aria-label="Menu">
       <button type="button" className="btn btn-default" onClick={this.invokeTest.bind(this,'datax')}>插入数据</button>
-      <button type="button" className="btn btn-default">测试2</button>
+      <button type="button" className="btn btn-default" onClick={this.invokeTest.bind(this,'firmware')}>升级文件管理</button>
       <button type="button" className="btn btn-default">测试3</button>
     </div>
     );
@@ -53,6 +54,8 @@ class TestPage extends Component {
     var comp;
     if (this.state.action == 'datax')
       comp = (<TestDatax />);
+    else if (this.state.action == 'firmware')
+      comp = (<TestFirmware />);
 
     return comp;
   }
