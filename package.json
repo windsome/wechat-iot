@@ -1,7 +1,7 @@
 {
-  "name": "weixin-site",
+  "name": "wechat-iot",
   "version": "1.0.0",
-  "description": "Weixin site of CAU IOT",
+  "description": "Wechat of CAU IOT",
   "main": "dist/index.js",
   "scripts": {
     "build": "webpack -b",
@@ -12,13 +12,13 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/windsome/weixin-site"
+    "url": "https://github.com/windsome/wechat-iot"
   },
   "peerDependencies": {
     "react": "~0.14",
     "react-dom": "~0.14"
   },
-  "bugs": "https://github.com/windsome/weixin-site/issues",
+  "bugs": "https://github.com/windsome/wechat-iot/issues",
   "keywords": [
     "chart",
     "react",
