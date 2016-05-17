@@ -117,7 +117,8 @@ class IotPage2 extends Component {
           'chooseCard',
           'openCard',
           'openWXDeviceLib',
-          'getWXDeviceTicket'
+          'getWXDeviceTicket',
+          'configWXDeviceWiFi'
       ]
     });
 
@@ -156,6 +157,22 @@ class IotPage2 extends Component {
     this.setState ({action:'detail', detail_device: device});
   }
 
+  invokeAirkiss () {
+    wx.invoke('configWXDeviceWiFi', {}, function(res){
+      console.log ("configWXDeviceWiFi: " + res.err_msg);
+      if (res.err_msg.indexOf(":ok") >= 0) {
+        console.log ("ok1");
+        alert ("ok1");
+      } else if (res.err_msg.indexOf(":cancel") >= 0) {
+        console.log ("cancel");
+        alert("cancel");
+      } else {
+        console.log ("fail");
+        alert ("fail");
+      }
+    }.bind(this));
+  }
+
   renderAction () {
     try {
     var comp;
@@ -187,6 +204,7 @@ class IotPage2 extends Component {
       <div className="btn-group" role="group" aria-label="Menu">
         <button type="button" className="btn btn-default" onClick={this.invokeTest.bind(this, 'scan')}>扫描设备</button>
         <button type="button" className="btn btn-default" onClick={this.invokeTest.bind(this, 'list')}>设备列表</button>
+        <button type="button" className="btn btn-default" onClick={this.invokeAirkiss.bind(this)}>WIFI配置</button>
         <button type="button" className="btn btn-default" onClick={this.invokeTest.bind(this, 'help')}>帮助</button>
       </div>
       <div id="wx_config_status">

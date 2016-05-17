@@ -6,6 +6,8 @@ export default class DeviceList extends Component {
   state = {
     list_status:'none',
     list_status_str:'',
+    bind_status:'none',
+    bind_status_str:'',
     devices: {},
     deviceArray: [],
     devices_datax: {},
@@ -15,7 +17,7 @@ export default class DeviceList extends Component {
 
   constructor (props) {
     super (props);
-    console.log ("DeviceList");
+    console.log ("DeviceList constructor");
     //this.devices = props.devices;
   }
 
@@ -32,7 +34,6 @@ export default class DeviceList extends Component {
   }
   componentDidMount() {
       try {
-    console.log("deviceid:"+this.props.deviceid);
     //this.setInterval(this.updateSensorData.bind(this), 5000);
     this.getDeviceList();
       } catch (e) {
@@ -40,6 +41,7 @@ export default class DeviceList extends Component {
       }
   }
   updateSensorData() {
+    try {
     //let url = ApiUrl.URL_API_DEVICE_GETDATAXLATESTLIST+"/deviceid/"+this.props.deviceid+"/begintime/"+this.state.endtime;
     let url = ApiUrl.URL_API_DEVICE_GETDATAXLATESTLIST+"/begintime/"+this.state.endtime;
     //console.log ("Datax url="+url);
@@ -85,9 +87,13 @@ export default class DeviceList extends Component {
         this.setState({list_status:'fail',list_status_str:JSON.stringify(errMsg)});
       }.bind(this)
     });
+    } catch (e) {
+      console.log (e);
+    }
   }
 
   getDeviceList () {
+    try {
     //alert ("try to get devices");
     console.log ("try to get devices");
     this.setState({list_status:'init'});
@@ -133,6 +139,59 @@ export default class DeviceList extends Component {
         this.setState({list_status:'fail', list_status_str:JSON.stringify(errMsg)});
       }.bind(this)
     });
+    } catch (e) {
+      console.log (e);
+    }
+  }
+
+  handleUnbindDevice (device) {
+    try {
+    this.setState({bind_status:'init', bind_status_str:'begin unbind...'});
+    wx.invoke('getWXDeviceTicket', {"deviceId":device.deviceid,"type":2}, function(res){
+        var err_msg = res.err_msg;
+        if (err_msg.indexOf(":ok") >= 0) {
+          //alert ("get ticket1 = "+ res.ticket);
+          this.setState({bind_status:'ticketok', bind_status_str:'get ticket ok'});
+          $.ajax({
+            type: "POST",
+            url: ApiUrl.URL_API_DEVICE_UNBINDTOUSER2,
+            data: JSON.stringify({ticket:res.ticket, device:device}),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (data) {
+              //alert(JSON.stringify(data));
+              if (data.errcode == 0) {
+                console.log ("unbind device ok:"+JSON.stringify(data));
+                this.setState ({bind_status:'ok', bind_status_str:'unbind ok!'});
+                this.getDeviceList ();
+              } else {
+                if (data.errcode > 40000) {
+                  console.log ("weixin unbind error!");
+                  this.setState ({bind_status:'fail', bind_status_str:'unbind fail'});
+                } else if (data.errcode >=10000) {
+                  console.log ("save to database error!");
+                  this.setState ({bind_status:'dbfail', bind_status_str:'db fail'});
+                } else if (data.errcode < 0) {
+                  console.log ("system error!");
+                  this.setState ({bind_status:'fail', bind_status_str:'system error!'});
+                }
+              }
+            }.bind(this),
+            failure: function (errMsg) {
+              console.log ("bind fail: "+JSON.stringify(errMsg));
+              this.setState ({bind_status:'fail', bind_status_str:JSON.stringify(errMsg)});
+            }.bind(this)
+          });
+        } else {
+          this.setState ({bind_status:'ticketfail', bind_status_str:errMsg.err_msg});
+          console.log("get ticket fail!");
+          //alert("get ticket fail!");
+        }
+      }.bind(this)
+    );
+    } catch (e) {
+      console.log (e);
+    }
   }
 
   showDetail(device) {
@@ -165,7 +224,7 @@ export default class DeviceList extends Component {
           <div>
             <a className="text-nowrap" onClick={(e)=>this.props.gotoDeviceDetail(device)}>{device.deviceid}</a>
           </div>
-          <div>{device.info && device.info.name || "未命名"}---设备型号:{device.productid}</div>
+          <div>{device.info && device.info.name || "未命名"}---设备型号:{device.productid} <a className="text-nowrap" onClick={this.handleUnbindDevice.bind(this,device)}>不再关注</a></div>
 
           <div>
             {sensor_html || "无数据"}
@@ -178,11 +237,12 @@ export default class DeviceList extends Component {
       console.log (e);
     }
   }
-  renderDevice2 (device, index) {
+  /*renderDevice2 (device, index) {
     try {
     var id = device.deviceid;
     var sensor_html = this.state.devices_datax[id] && 
       this.state.devices_datax[id].map ((dataxid, index)=>{
+        // single sensor data.
         var datax1 = this.state.datax[dataxid];
         var data_time = datax1 && datax1.time && (new Date(datax1.time*1000));
         var data_time_str = "";
@@ -201,12 +261,6 @@ export default class DeviceList extends Component {
           <td>
           {sensor_html}
           </td>
-          {/*<td>
-              <span className="text-nowrap">温度：26C </span><br/>
-              <span className="text-nowrap">湿度：30% </span><br/>
-              <span className="text-nowrap">光照：34200LM </span><br/>
-              <span className="text-nowrap">CO2: 12223 </span><br/>
-          </td>*/}
           <td><a className="text-nowrap">删除</a><a className="text-nowrap" onClick={(e)=>this.props.gotoDeviceDetail(device)}>查看</a></td>
       </tr>
     );
@@ -214,7 +268,7 @@ export default class DeviceList extends Component {
       console.log ("renderDevice");
       console.log (e);
     }
-  }
+  }*/
   renderDeviceList () {
     try {
     var deviceList2 = this.state.deviceArray.map((deviceid, index) => {
@@ -249,6 +303,12 @@ export default class DeviceList extends Component {
     var errMsg = '';
     if (this.state.list_status == 'fail')
       errMsg = "错误消息："+this.state.list_status_str;
+    else
+      errMsg = this.state.list_status_str;
+
+    if (this.state.bind_status != 'none')
+      errMsg += "  bind:"+this.state.bind_status_str;
+
 	  return (
 	  <div>
   	  <h1 className="text-center">设备列表</h1>
