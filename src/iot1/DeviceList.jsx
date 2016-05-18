@@ -224,7 +224,8 @@ export default class DeviceList extends Component {
           <div>
             <a className="text-nowrap" onClick={(e)=>this.props.gotoDeviceDetail(device)}>{device.deviceid}</a>
           </div>
-          <div>{device.info && device.info.name || "未命名"}---设备型号:{device.productid} <a className="text-nowrap" onClick={this.handleUnbindDevice.bind(this,device)}>不再关注</a></div>
+          <div>设备型号:{device.productid} -硬件版本：{device.hwver} -软件版本：{device.swver}</div>
+          <div>{device.info && device.info.name || "未命名"} <a className="text-nowrap" onClick={this.handleUnbindDevice.bind(this,device)}>不再关注</a></div>
 
           <div>
             {sensor_html || "无数据"}

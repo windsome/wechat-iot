@@ -130,6 +130,14 @@ export default class DeviceDetail extends Component {
                 <td>{device.productid}</td>
               </tr>
               <tr>
+                <td>硬件版本</td>
+                <td>{device.hwver}</td>
+              </tr>
+              <tr>
+                <td>软件版本</td>
+                <td>{device.swver}</td>
+              </tr>
+              <tr>
                 <td>二维码</td>
                 <td><div className="text-justify">{device.qrcode}</div></td>
               </tr>
