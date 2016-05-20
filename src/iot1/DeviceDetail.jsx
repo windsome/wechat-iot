@@ -160,11 +160,7 @@ export default class DeviceDetail extends Component {
       var data_value = last_data && last_data[1];
       if (!last_data) data_value = "无数据";
       var data_time = last_data && (new Date(last_data[0]*1000));
-      var data_time_str = "";
-      if (data_time) {
-        data_time_str = (data_time.getMonth()+1)+"-"+data_time.getDate()+" "+data_time.getHours()+":"+data_time.getMinutes()+":"+data_time.getSeconds();
-      }
-      console.log ("data_time="+JSON.stringify(data_time)+",data_time_str="+data_time_str+",last_data="+JSON.stringify(last_data));
+      var data_time_str = (data_time && data_time.format("MM-dd hh:mm:ss")) || '';
       return (
         <tr key={index}>
           <td>{sensor.type}-{sensor.subid} </td>

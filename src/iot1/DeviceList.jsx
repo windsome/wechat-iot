@@ -57,21 +57,32 @@ export default class DeviceList extends Component {
         if (result.response == 'success') {
           //console.log ("result.sensors="+JSON.stringify(result.sensors)+", length="+result.sensors.length);
           if (result.datax && result.datax.length > 0) {
-            var datax = {};
-            var devices_datax= {};
+            //var datax = {};
+            //var devices_datax= {};
+            var datax = Object.assign({}, this.state.datax);
+            var devices_datax= Object.assign({}, this.state.devices_datax);
 
             result.datax.map ((data, index)=>{
               datax[data.id] = data;
-              if (devices_datax[data.deviceid])
-                devices_datax[data.deviceid].push(data.id);
-              else {
-                devices_datax[data.deviceid] = {};
-                devices_datax[data.deviceid] = new Array (data.id);
-              }
+              if (!devices_datax[data.deviceid])
+                devices_datax[data.deviceid] = new Array();
+
+              // update sensor data.
+              // find old deviceid & subid, replace it.
+              var updated = devices_datax[data.deviceid].reduce ((previous, current, index, arr) => {
+                var tmpsubid = datax[current] && datax[current].subid;
+                if (tmpsubid != data.subid) {
+                  previous.push(current);
+                }
+                return previous;
+              }, []);
+              updated.push(data.id);
+              devices_datax[data.deviceid] = updated;
+
             });
 
-            devices_datax = Object.assign ({}, this.state.devices_datax, devices_datax);
-            datax = Object.assign ({}, this.state.datax, datax);
+            //devices_datax = Object.assign ({}, this.state.devices_datax, devices_datax);
+            //datax = Object.assign ({}, this.state.datax, datax);
             console.log ("datax:");
             console.log (datax);
             this.setState ({datax:datax, devices_datax: devices_datax, endtime: result.endtime});
@@ -208,13 +219,11 @@ export default class DeviceList extends Component {
     var sensor_html = this.state.devices_datax[id] && 
       this.state.devices_datax[id].map ((dataxid, index)=>{
         var datax1 = this.state.datax[dataxid];
+        var data_value = datax1 && Number(datax1.val);
         var data_time = datax1 && datax1.time && (new Date(datax1.time*1000));
-        var data_time_str = "";
-        if (data_time) {
-          data_time_str = (data_time.getMonth()+1)+"-"+data_time.getDate()+" "+data_time.getHours()+":"+data_time.getMinutes()+":"+data_time.getSeconds();
-        }
+        var data_time_str = (data_time && data_time.format("MM-dd hh:mm:ss")) || '';
         return (
-          <span key={datax1.id} className="text-nowrap">{datax1.type}：{datax1.val}  <sub>{data_time_str}</sub> <br/></span>
+          <span key={datax1.id} className="text-nowrap">{datax1.type}：{data_value}  <sub>{data_time_str}</sub> <br/></span>
         );
       });
 
